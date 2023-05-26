@@ -13,6 +13,7 @@ const refs = {
 let chooseData;
 let ms;
 
+
 const options = {
   enableTime: true,
   time_24hr: true,
@@ -26,29 +27,32 @@ const options = {
       refs.startButton.disabled = true;
     } else {
       refs.startButton.disabled = false;
-      refs.startButton.addEventListener(`click`, () => {
+      refs.startButton.addEventListener(`click`, onStartButtonClick)
+    };
+      function onStartButtonClick() {
         ms = chooseData - currentDate;
         convertMs(ms);
-        setInterval(() => {
-          refs.days.textContent = convertMs(ms).days;
-          refs.hours.textContent = String(convertMs(ms).hours).padStart(2,0);
-          refs.minutes.textContent = String(convertMs(ms).minutes).padStart(2,0);
-          refs.seconds.textContent = String(convertMs(ms).seconds).padStart(2,0);
-        }, 1000);
-      });
-      function convertMs(ms) {
-        const second = 1000;
-        const minute = second * 60;
-        const hour = minute * 60;
-        const day = hour * 24;
-
-        const days = Math.floor(ms / day);
-        const hours = Math.floor((ms % day) / hour);
-        const minutes = Math.floor(((ms % day) % hour) / minute);
-        const seconds = Math.floor((((ms % day) % hour) % minute) / second);
-
-        return { days, hours, minutes, seconds };
+        const intervalId = setInterval(updateTimer, 1000);
       }
+      function updateTimer() {
+        refs.days.textContent = convertMs(ms).days;
+        refs.hours.textContent = String(convertMs(ms).hours).padStart(2, 0);
+        refs.minutes.textContent = String(convertMs(ms).minutes).padStart(2, 0);
+        refs.seconds.textContent = String(convertMs(ms).seconds).padStart(2, 0);
+      }
+    
+    function convertMs(ms) {
+      const second = 1000;
+      const minute = second * 60;
+      const hour = minute * 60;
+      const day = hour * 24;
+
+      const days = Math.floor(ms / day);
+      const hours = Math.floor((ms % day) / hour);
+      const minutes = Math.floor(((ms % day) % hour) / minute);
+      const seconds = Math.floor((((ms % day) % hour) % minute) / second);
+
+      return { days, hours, minutes, seconds };
     }
   },
 };

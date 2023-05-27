@@ -12,7 +12,6 @@ const refs = {
 
 let chooseData;
 let ms;
-let intervalId;
 const currentDate = new Date().getTime();
 
 const options = {

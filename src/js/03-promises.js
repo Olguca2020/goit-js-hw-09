@@ -6,10 +6,10 @@ const refs = {
 };
 
 refs.form.addEventListener(`submit`, (e) => {
-  e.preventDefault;  
-  const delay = Number(refs.delay.value);
-  const step = Number(refs.step.value);
-  const amount = Number(refs.amount.value);
+  e.preventDefault();  
+  let delay = Number(refs.delay.value);
+  let step = Number(refs.step.value);
+  let amount = Number(refs.amount.value);
 
   for (let position = 1; position <= amount; position += 1){
     createPromise(position, delay)
@@ -19,7 +19,7 @@ refs.form.addEventListener(`submit`, (e) => {
       .catch(({ position, delay }) => {
         console.log(`❌ Rejected promise ${position} in ${delay}ms`);
       });
-    delay += step
+    delay += step;
   }
 });
 

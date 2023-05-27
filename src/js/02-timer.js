@@ -1,5 +1,6 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import Notiflix from 'notiflix';
 
 const refs = {
   inputData: document.getElementById('datetime-picker'),
@@ -9,46 +10,53 @@ const refs = {
   minutes: document.querySelector('.value[data-minutes]'),
   seconds: document.querySelector('.value[data-seconds]'),
 };
+refs.startButton.addEventListener(`click`, onStartButtonClick);
 
 let chooseData;
 let ms;
-const currentDate = new Date().getTime();
+const currentDate = new Date();
+let intervalId = null;
 
 const options = {
   enableTime: true,
   time_24hr: true,
   defaultDate: new Date(),
   minuteIncrement: 1,
-  onClose(selectedDates) {    
+  onClose(selectedDates) {
     chooseData = selectedDates[0].getTime();
     if (chooseData - currentDate <= 0) {
-      alert('Please choose a date in the future');
+      Notiflix.Notify.failure('Please choose a date in the future');
       refs.startButton.disabled = true;
     } else {
       refs.startButton.disabled = false;
-      refs.startButton.addEventListener(`click`, onStartButtonClick);
     }
   },
 };
 function onStartButtonClick() {
-  ms = chooseData - currentDate;
-  convertMs(ms);
-  const intervalId = setInterval(updateTimer, 1000);
-  if (ms <= 0) {
-    clearInterval(intervalId);
-  };
-};
+  intervalId = setInterval(() => {
+    const currentDate = Date.now();
+    ms = chooseData - currentDate;
+
+    const { days, hours, minutes, seconds } = convertMs(ms);
+
+    refs.days.textContent = addLeadingZero(days);
+    refs.hours.textContent = addLeadingZero(hours);
+    refs.minutes.textContent = addLeadingZero(minutes);
+    refs.seconds.textContent = addLeadingZero(seconds);
+
+    if (ms <= 0) {
+      clearInterval(intervalId);
+      refs.days.textContent = '00';
+      refs.hours.textContent = '00';
+      refs.minutes.textContent = '00';
+      refs.seconds.textContent = '00';
+    }
+  }, 1000);
+}
+
 function addLeadingZero(value) {
   return String(value).padStart(2, 0);
 }
-function updateTimer() {
-  const { days, hours, minutes, seconds } = convertMs(ms);
-  refs.days.textContent = addLeadingZero(days);
-  refs.hours.textContent = addLeadingZero(hours);
-  refs.minutes.textContent = addLeadingZero(minutes);
-  refs.seconds.textContent = addLeadingZero(seconds);
-  
-};
 
 function convertMs(ms) {
   const second = 1000;
@@ -65,4 +73,3 @@ function convertMs(ms) {
 }
 
 flatpickr(refs.inputData, options);
-

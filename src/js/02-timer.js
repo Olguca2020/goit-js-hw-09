@@ -16,7 +16,7 @@ let chooseData;
 let ms;
 const currentDate = new Date();
 let intervalId = null;
-
+refs.startButton.disabled = true;
 const options = {
   enableTime: true,
   time_24hr: true,
